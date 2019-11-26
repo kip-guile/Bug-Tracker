@@ -1,0 +1,36 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "migrate": "knex migrate:latest",
+    "test": "cross-env DB_ENV=testing jest --watchAll --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kip-guile/Bug-Tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kip-guile/Bug-Tracker/issues"
+  },
+  "homepage": "https://github.com/kip-guile/Bug-Tracker#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "helmet": "^3.21.2",
+    "knex": "^0.20.2",
+    "pg": "^7.14.0",
+    "sqlite3": "^4.1.0"
+  },
+  "devDependencies": {
+    "cross-env": "^6.0.3",
+    "eslint": "^6.7.1",
+    "jest": "^24.9.0"
+  }
+}
