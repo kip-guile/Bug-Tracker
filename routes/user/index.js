@@ -5,6 +5,6 @@ const restricted = require('../../middlewares/restricted')
 
 
 router.get('/', restricted, Functions.getUsers)
-router.get('/profile')
+router.get('/:id', restricted, Functions.getUserById)
 
 module.exports = router

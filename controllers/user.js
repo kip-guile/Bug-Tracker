@@ -13,6 +13,19 @@ const getUsers = (req, res) => {
     });
 }
 
+const getUserById = (req, res) => {
+    const {id} = req.params
+    Users.findById(id)
+    .then(user => {
+        if(user) {
+            req.user = user
+            res.status(200).json(user)
+        } else {
+            res.status(400).json({message: "invalid user ID"})
+        }
+    })
+}
+
 const register = (req, res) => {
     let user = req.body;
     const hash = bcrypt.hashSync(user.password, 10); // 2 ^ n
@@ -73,5 +86,6 @@ function generateToken(user) {
   module.exports = {
     register,
     login,
-    getUsers
+    getUsers,
+    getUserById
 }
