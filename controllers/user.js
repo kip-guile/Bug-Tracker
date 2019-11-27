@@ -3,6 +3,16 @@ const jwt = require('jsonwebtoken');
 
 const Users = require('../database/models/user')
 
+const getUsers = (req, res) => {
+    Users.find()
+    .then(users => {
+      res.json(users);
+    })
+    .catch(err => {
+      res.json({message: 'You shall not pass' + '-' + err.message})
+    });
+}
+
 const register = (req, res) => {
     let user = req.body;
     const hash = bcrypt.hashSync(user.password, 10); // 2 ^ n
@@ -62,5 +72,6 @@ function generateToken(user) {
 
   module.exports = {
     register,
-    login
+    login,
+    getUsers
 }
