@@ -19,16 +19,16 @@ const register = (req, res) => {
 
 
 const login = (req, res) => {
-    let { username, password } = req.body;
+    let { email, password } = req.body;
 
-    Users.findBy({ username })
+    Users.findBy({ email })
       .first()
       .then(user => {
         if (user && bcrypt.compareSync(password, user.password)) {
           // THIS HERE IS THE PLACE TO MAKE THE TOKEN
           const token = generateToken(user);
           res.status(200).json({
-            message: `Welcome ${user.username}!`,
+            message: `Welcome ${user.first_name}!`,
             token: token,
           });
         } else {
@@ -43,8 +43,8 @@ const login = (req, res) => {
 function generateToken(user) {
     const payload = {
       subject: user.id,
-      username: user.username,
-      department: user.department,
+      email: user.email,
+      position: user.position,
     }
     const options = {
       expiresIn: '1d',
