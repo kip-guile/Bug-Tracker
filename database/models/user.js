@@ -5,6 +5,11 @@ module.exports = {
   find,
   findBy,
   findById,
+  addProject,
+  getProjectBy,
+  updateProject,
+  deleteproject,
+  getProject
 };
 
 function find() {
@@ -25,4 +30,38 @@ function findById(id) {
   return db('users')
     .where({ id })
     .first();
+}
+
+function getProject() {
+  return db('projects as p')
+    .leftJoin('users as u, p.user_id, u.id')
+    .select('p.id', 'title', 'frontend', 'backend', 'client', 'description', 'last_name', 'first_name')
+}
+
+function getProjectBy(filter) {
+  return db('projects')
+    .where(filter)
+}
+
+function addProject(project) {
+  return db('projects')
+    .insert(project, 'id')
+    .then(([id]) => {
+      return getProjectBy({id}).first()
+    })
+}
+
+function updateProject(id, update) {
+  return db('projects')
+    .where({id})
+    .update(update)
+    .then(() => {
+      return getProjectBy({id}).first()
+    })
+}
+
+function deleteproject(id) {
+  return db('projects')
+    .where({id})
+    .delete()
 }
