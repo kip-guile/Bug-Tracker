@@ -54,7 +54,7 @@ function addProject(project) {
 function updateProject(id, update) {
   return db('projects')
     .where({id})
-    .update(update)
+    .update(update, 'id')
     .then(() => {
       return getProjectBy({id}).first()
     })
