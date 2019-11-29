@@ -19,7 +19,7 @@ module.exports = {
     newEntry: 'successfully created!',
     updatedEntry: 'successfully updated!',
     entryRemoved: function (value) {
-       return `${value} has been successfully removed from your list`
+       return `${value} has been successfully deleted`
     },
     limitReached: 'Maximum class size reached',
     // eslint-disable-next-line no-useless-escape

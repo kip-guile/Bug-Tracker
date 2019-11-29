@@ -1,3 +1,4 @@
+// const jwt = require('jsonwebtoken')
 const Projects = require('../database/models/user')
 const variables = require('../helpers/variables')
 
@@ -45,8 +46,8 @@ const deleteProject = async (req, res) => {
         const id = req.params.id
         const {user_id} = await Projects.getProjectBy({id}).first()
         if (user_id === req.decodedToken.subject) {
-            await Projects.deleteProject(req.params.id)
-            res.status(200).json({message: variables.entryRemoved('projects')})
+            await Projects.deleteproject(req.params.id)
+            res.status(200).json({message: variables.entryRemoved('project')})
         } else {
             res.status(401).json({message: variables.noAccess})
         }

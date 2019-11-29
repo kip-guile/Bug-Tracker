@@ -34,7 +34,7 @@ function findById(id) {
 
 function getProject() {
   return db('projects as p')
-    .leftJoin('users as u, p.user_id, u.id')
+    .join('users as u', 'p.user_id', 'u.id')
     .select('p.id', 'title', 'frontend', 'backend', 'client', 'description', 'last_name', 'first_name')
 }
 
