@@ -9,7 +9,8 @@ module.exports = {
   getProjectBy,
   updateProject,
   deleteproject,
-  getProject
+  getProject,
+  getBugs
 };
 
 function find() {
@@ -30,6 +31,26 @@ function findById(id) {
   return db('users')
     .where({ id })
     .first();
+}
+
+// select 
+// id, title, description, 
+// severity, date_reported, status,
+// first_name, last_name, p.title as project_title
+// from users_bugs ub
+// inner join bugs b
+// on ub.bug_id = b.id
+// inner join users u
+// on ub.user_id = u.id
+// inner join projects p
+// on b.project_id = p.id
+
+function getBugs() {
+  return db('users_bugs as ub')
+    .join('bugs as b', 'ub.bug_id', 'b.id')
+    .join('users as u', 'ub.user_id', 'u.id')
+    .join('projects as p', 'b.project_id', 'p.id')
+    .select('b.id', 'b.title as bug_title', 'severity', 'date_reported', 'status', 'p.title as project_title', 'first_name', 'last_name')
 }
 
 function getProject() {
