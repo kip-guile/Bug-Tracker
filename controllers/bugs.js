@@ -91,6 +91,16 @@ const updateBug = async (req, res) => {
         })
 }
 
+const changeBugStatus = async (req, res) => {
+    Projects.changeBugStatus(req.params.id, req.body)
+        .then(bug => {
+            res.status(201).json({message: 'Status Changed', bug})
+        })
+        .catch(error => {
+            res.status(500).json({message: variables.errorMessage, error: error.message})
+        })
+}
+
 const deleteBug = async (req, res) => {
     Projects.deleteBug(req.params.id)
         .then(() => {
@@ -110,5 +120,6 @@ module.exports = {
     addBug,
     updateBug,
     deleteBug,
-    assignBug
+    assignBug,
+    changeBugStatus
 }

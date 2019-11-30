@@ -18,7 +18,8 @@ module.exports = {
   addBug,
   updateBug,
   deleteBug,
-  assignBug
+  assignBug,
+  changeBugStatus
 };
 
 function find() {
@@ -136,6 +137,15 @@ function updateBug (id, update) {
   return db('bugs')
     .where({id})
     .update(update, 'id')
+    .then(() => {
+      return getAllBugsById(id).first()
+    })
+}
+
+function changeBugStatus(id, body) {
+  return db('bugs')
+    .where({id})
+    .update({status: body.status}, 'id')
     .then(() => {
       return getAllBugsById(id).first()
     })
