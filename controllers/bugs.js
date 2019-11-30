@@ -15,6 +15,24 @@ const getBugs = async (req, res) => {
     }
 }
 
+const getUnassignedBugs = async (req, res) => {
+    try {
+        const bugs =  await Projects.getAllBugs()
+        res.status(200).json(bugs)
+    } catch (error) {
+        res.status(500).json({message: variables.errorMessage, error: error.message})
+    }
+}
+
+const getUnassignedBugsById = async (req, res) => {
+    try {
+        const bugs =  await Projects.getAllBugsById(req.params.id)
+        res.status(200).json(bugs)
+    } catch (error) {
+        res.status(500).json({message: variables.errorMessage, error: error.message})
+    }
+}
+
 const getBugByDevId = async (req, res) => {
     try {
         let bug = await Projects.getBugByDevId(req.body.id)
@@ -43,8 +61,21 @@ const getBugById = async (req, res) => {
     }
 }
 
+const addBug = async (req, res) => {
+    Projects.addBug(req.body)
+        .then(bug => {
+            res.status(201).json({message: variables.newEntry, bug})
+        })
+        .catch(error => {
+            res.status(500).json({message: variables.errorMessage, error: error.message})
+        })
+}
+
 module.exports = {
     getBugs,
+    getUnassignedBugs,
+    getUnassignedBugsById,
     getBugByDevId,
-    getBugById
+    getBugById,
+    addBug
 }

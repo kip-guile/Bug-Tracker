@@ -12,7 +12,10 @@ module.exports = {
   getProject,
   getBugs,
   getBugByDevId,
-  getBugById
+  getBugById,
+  getAllBugsById,
+  getAllBugs,
+  addBug
 };
 
 function find() {
@@ -59,7 +62,7 @@ function getBugByDevId(id) {
   .join('bugs as b', 'ub.bug_id', 'b.id')
   .join('users as u', 'ub.user_id', 'u.id')
   .join('projects as p', 'b.project_id', 'p.id')
-  .select('b.id', 'b.title as bug_title', 'severity', 'date_reported', 'status', 'p.title as project_title', 'first_name', 'last_name')
+  .select('b.id', 'b.title as bug_title', 'b.description', 'severity', 'date_reported', 'status', 'p.title as project_title', 'first_name', 'last_name')
   .where('ub.user_id', id)
 }
 
@@ -68,8 +71,20 @@ function getBugById(id) {
   .join('bugs as b', 'ub.bug_id', 'b.id')
   .join('users as u', 'ub.user_id', 'u.id')
   .join('projects as p', 'b.project_id', 'p.id')
-  .select('b.id', 'b.title as bug_title', 'severity', 'date_reported', 'status', 'p.title as project_title', 'first_name', 'last_name')
+  .select('b.id', 'b.title as bug_title', 'b.description', 'severity', 'date_reported', 'status', 'p.title as project_title', 'first_name', 'last_name')
   .where('b.id', id)
+}
+
+function getAllBugsById(id) {
+  return db('bugs')
+  .where({ id })
+  .first();
+}
+
+function getAllBugs() {
+  return db('bugs as b')
+  .join('projects as p', 'b.project_id', 'p.id')
+  .select('b.id', 'b.title as bug_title', 'b.description', 'severity', 'date_reported', 'status', 'p.title as project_title')
 }
 
 function addProject(project) {
@@ -77,6 +92,14 @@ function addProject(project) {
     .insert(project, 'id')
     .then(([id]) => {
       return getProjectBy({id}).first()
+    })
+}
+
+function addBug(bug) {
+  return db('bugs')
+    .insert(bug, 'id')
+    .then(([id]) => {
+      return getAllBugsById(id).first()
     })
 }
 
