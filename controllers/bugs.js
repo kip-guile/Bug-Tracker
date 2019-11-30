@@ -71,6 +71,16 @@ const addBug = async (req, res) => {
         })
 }
 
+const assignBug = async (req, res) => {
+    Projects.assignBug(req.body)
+        .then(assigned => {
+            res.status(201).json({message: variables.newEntry, assigned})
+        })
+        .catch(error => {
+            res.status(500).json({message: variables.errorMessage, error: error.message})
+        })
+}
+
 const updateBug = async (req, res) => {
     Projects.updateBug(req.params.id, req.body)
         .then(bug => {
@@ -99,5 +109,6 @@ module.exports = {
     getBugById,
     addBug,
     updateBug,
-    deleteBug
+    deleteBug,
+    assignBug
 }

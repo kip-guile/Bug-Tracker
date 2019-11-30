@@ -17,7 +17,8 @@ module.exports = {
   getAllBugs,
   addBug,
   updateBug,
-  deleteBug
+  deleteBug,
+  assignBug
 };
 
 function find() {
@@ -77,6 +78,15 @@ function getBugById(id) {
   .where('b.id', id)
 }
 
+function getAssignedBug(id){
+  return db('users_bugs as ub')
+  .join('bugs as b', 'ub.bug_id', 'b.id')
+  .join('users as u', 'ub.user_id', 'u.id')
+  .join('projects as p', 'b.project_id', 'p.id')
+  .select('b.id', 'b.title as bug_title', 'b.description', 'severity', 'date_reported', 'status', 'p.title as project_title', 'first_name', 'last_name')
+  .where('ub.id', id)
+}
+
 function getAllBugsById(id) {
   return db('bugs')
   .where({ id })
@@ -102,6 +112,14 @@ function addBug(bug) {
     .insert(bug, 'id')
     .then(([id]) => {
       return getAllBugsById(id).first()
+    })
+}
+
+function assignBug(ids) {
+  return db('users_bugs')
+    .insert(ids, 'id')
+    .then(([id]) => {
+      return getAssignedBug(id).first()
     })
 }
 
