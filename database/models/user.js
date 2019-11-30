@@ -15,7 +15,9 @@ module.exports = {
   getBugById,
   getAllBugsById,
   getAllBugs,
-  addBug
+  addBug,
+  updateBug,
+  deleteBug
 };
 
 function find() {
@@ -110,6 +112,21 @@ function updateProject(id, update) {
     .then(() => {
       return getProjectBy({id}).first()
     })
+}
+
+function updateBug (id, update) {
+  return db('bugs')
+    .where({id})
+    .update(update, 'id')
+    .then(() => {
+      return getAllBugsById(id).first()
+    })
+}
+
+function deleteBug (id) {
+  return db('bugs')
+    .where({id})
+    .delete()
 }
 
 function deleteproject(id) {

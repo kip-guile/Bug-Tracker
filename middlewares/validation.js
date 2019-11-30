@@ -11,8 +11,7 @@ const validateBody = (req, res, next) => {
 }
 
 function validateBugById(req, res, next) {
- const {id} = req.params
- Users.getAllBugsById(id)
+ Users.getAllBugsById(req.params.id)
  .then(post => {
      if (post.length !== 0) {
          next()

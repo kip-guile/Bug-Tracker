@@ -71,11 +71,33 @@ const addBug = async (req, res) => {
         })
 }
 
+const updateBug = async (req, res) => {
+    Projects.updateBug(req.params.id, req.body)
+        .then(bug => {
+            res.status(201).json({message: variables.updatedEntry, bug})
+        })
+        .catch(error => {
+            res.status(500).json({message: variables.errorMessage, error: error.message})
+        })
+}
+
+const deleteBug = async (req, res) => {
+    Projects.deleteBug(req.params.id)
+        .then(() => {
+            res.status(200).json({message: variables.entryRemoved('bug')})
+        })
+        .catch(error => {
+            res.status(500).json({message: variables.errorMessage, error: error.message})
+        })
+}
+
 module.exports = {
     getBugs,
     getUnassignedBugs,
     getUnassignedBugsById,
     getBugByDevId,
     getBugById,
-    addBug
+    addBug,
+    updateBug,
+    deleteBug
 }
