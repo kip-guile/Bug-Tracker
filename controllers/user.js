@@ -6,6 +6,12 @@ const Users = require('../database/models/user')
 const getUsers = (req, res) => {
     Users.find()
     .then(users => {
+      users.forEach(user => {
+        user.name = user.first_name + " " + user.last_name
+        delete user.first_name
+        delete user.last_name
+        delete user.password
+      })
       res.json(users);
     })
     .catch(err => {

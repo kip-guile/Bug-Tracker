@@ -54,6 +54,7 @@ function getProject() {
   return db('projects as p')
     .join('users as u', 'p.user_id', 'u.id')
     .select('p.id', 'title', 'frontend', 'backend', 'client', 'description', 'last_name', 'first_name')
+    .orderBy('p.id', 'desc')
 }
 
 function getProjectBy(filter) {
@@ -108,9 +109,19 @@ function addProject(project) {
     })
 }
 
+function getDate() {
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+  var yyyy = today.getFullYear();
+  today = mm + '-' + dd + '-' + yyyy;
+  return today
+}
+
 function addBug(bug) {
   return db('bugs')
-    .insert(bug, 'id')
+    .insert({bug_title: bug.bug_title, description: bug.description, severity: bug.severity,
+              status: bug.status, project_title: bug.project_title, date_reported: getDate()}, 'id')
     .then(([id]) => {
       return getAllBugsById(id).first()
     })
