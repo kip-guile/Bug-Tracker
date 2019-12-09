@@ -80,15 +80,6 @@ function getBugById(id) {
   .where('b.id', id)
 }
 
-function getAssignedBug(id){
-  return db('users_bugs as ub')
-  .join('bugs as b', 'ub.bug_id', 'b.id')
-  .join('users as u', 'ub.user_id', 'u.id')
-  .join('projects as p', 'b.project_id', 'p.id')
-  .select('b.id', 'b.title as bug_title', 'b.description', 'severity', 'date_reported', 'status', 'p.title as project_title', 'first_name', 'last_name')
-  .where('ub.id', id)
-}
-
 function getAllBugsById(id) {
   return db('bugs')
   .where({ id })
@@ -121,17 +112,62 @@ function getDate() {
 function addBug(bug) {
   return db('bugs')
     .insert({bug_title: bug.bug_title, description: bug.description, severity: bug.severity,
-              status: bug.status, project_title: bug.project_title, date_reported: getDate()}, 'id')
+              status: 'New', project_title: bug.project_title, date_reported: getDate()}, 'id')
     .then(([id]) => {
       return getAllBugsById(id).first()
     })
 }
 
+function bugStatusUpdate(id, t) {
+  return db('bugs').transacting(t).where({id})
+    .update({status: 'Assigned'}, 'id')
+}
+
+function getAssignedBug(id, t){
+  return db('users_bugs as ub').transacting(t)
+  .join('bugs as b', 'ub.bug_id', 'b.id')
+  .join('users as u', 'ub.user_id', 'u.id')
+  .join('projects as p', 'b.project_id', 'p.id')
+  .select('b.id', 'b.title as bug_title', 'b.description', 'severity', 'date_reported', 'status', 'p.title as project_title', 'first_name', 'last_name')
+  .where('ub.id', id)
+}
+
 function assignBug(ids) {
-  return db('users_bugs')
+  return db.transaction(function(t) {
+    return db('users_bugs')
+    .transacting(t)
     .insert(ids, 'id')
     .then(([id]) => {
-      return getAssignedBug(id).first()
+      // return getAssignedBug(id).first()
+     const changeStatus = bugStatusUpdate(ids.bug_id, t)
+     return Promise.all([changeStatus])
+      .then(() => {
+        const getData = getAssignedBug(id, t).first()
+        return Promise.all([getData])
+        .then((res) => {
+          console.log(res[0])
+          return res[0]
+        })
+      })
+    })
+    .then(t.commit)
+    .catch(t.rollback)
+  })
+  .then((res) => {
+    console.log(res)
+    return res
+})
+.catch((error) => {
+    console.log(error)
+})
+}
+
+function changeBugStatus(id, body) {
+  return db('bugs')
+    .where({id})
+    .update({status: body.status}, 'id')
+    .then(() => {
+      return getAllBugsById(id).first()
     })
 }
 
@@ -148,15 +184,6 @@ function updateBug (id, update) {
   return db('bugs')
     .where({id})
     .update(update, 'id')
-    .then(() => {
-      return getAllBugsById(id).first()
-    })
-}
-
-function changeBugStatus(id, body) {
-  return db('bugs')
-    .where({id})
-    .update({status: body.status}, 'id')
     .then(() => {
       return getAllBugsById(id).first()
     })
